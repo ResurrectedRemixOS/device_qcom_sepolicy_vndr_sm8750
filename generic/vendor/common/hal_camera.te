@@ -89,7 +89,11 @@ userdebug_or_eng(`
 binder_use(hal_camera_default)
 
 # Offline camera service access
-hal_attribute_service(hal_camera, vendor_hal_offlinecamera_service)
+# Expanded from hal_attribute_service so opluscamera_app can find() the
+# offline camera service (Oplus Camera talks to it directly).
+add_service(hal_camera_server, vendor_hal_offlinecamera_service)
+neverallow { domain -hal_camera_server } vendor_hal_offlinecamera_service:service_manager add;
+neverallow { domain -hal_camera_client -hal_camera_server -opluscamera_app -traceur_app -atrace -shell -system_app } vendor_hal_offlinecamera_service:service_manager find;
 
 # AON AIDL service access
 hal_attribute_service(hal_camera, vendor_hal_camera_aon_service)
